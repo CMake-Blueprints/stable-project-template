@@ -13,7 +13,7 @@ A comprehensive multi-library project template focussed on compatibility with ol
 - Includes hacks to allow unit testing of non-exported library symbols
 
 > [!IMPORTANT]
-> Many of the patterns in this example have been superceded by superior solutions. If you are starting a new project, it is highly recommended to use the [Cutting Edge Project Template](https://github.com/CMake-Blueprints/cutting-edge-project-template) instead.
+> Many of the patterns in this example have been superceded by superior solutions. If you are starting a new project, it is highly recommended to use the [State-of-the-Art Project Template](https://github.com/CMake-Blueprints/state-of-the-art-project-template) instead.
 
 ## Caveats
 

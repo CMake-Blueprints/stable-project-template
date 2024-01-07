@@ -56,8 +56,24 @@ if(PROJECT_IS_TOP_LEVEL OR ${PROJECT_NAME}_INSTALL)
   endif()
 
   include(GNUInstallDirs)
-  install(EXPORT ${PROJECT_NAME}Config
+  install(EXPORT ${PROJECT_NAME}Targets
     NAMESPACE ${PROJECT_NAME}::
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
+  )
+  include(CMakePackageConfigHelpers)
+  configure_package_config_file(
+    ${PROJECT_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.cmake.in
+    ${PROJECT_NAME}Config.cmake
+    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
+  )
+  write_basic_package_version_file(
+    ${PROJECT_NAME}ConfigVersion.cmake
+    VERSION ${PROJECT_VERSION}
+    COMPATIBILITY SameMajorVersion
+  )
+  install(FILES
+      ${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+      ${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
   )
 endif()

@@ -31,7 +31,7 @@ endif()
 
 # Installation
 include(GNUInstallDirs)
-install(TARGETS ${PROJECT_NAME}_Lib2 EXPORT ${PROJECT_NAME}Config)
+install(TARGETS ${PROJECT_NAME}_Lib2 EXPORT ${PROJECT_NAME}Targets)
 install(FILES ${PUBLIC_HEADERS}
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}/lib2
 )

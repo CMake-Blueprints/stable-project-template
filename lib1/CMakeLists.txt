@@ -1,0 +1,64 @@
+add_library(${PROJECT_NAME}_Lib1)
+add_library(${PROJECT_NAME}::Lib1 ALIAS ${PROJECT_NAME}_Lib1)
+
+set(EXPORT_HEADER ${CMAKE_CURRENT_BINARY_DIR}/lib1_export.h)
+include(GenerateExportHeader)
+generate_export_header(${PROJECT_NAME}_Lib1
+  EXPORT_FILE_NAME ${EXPORT_HEADER}
+  EXPORT_MACRO_NAME LIB1_EXPORT
+)
+
+set(PUBLIC_HEADERS ${EXPORT_HEADER}
+
+  # TODO: Add public headers here
+  include/MyProject/lib1/lib1.h
+)
+target_sources(${PROJECT_NAME}_Lib1 PRIVATE ${PUBLIC_HEADERS}
+
+  # TODO: Add private headers and sources here
+  src/lib1_private.h
+  src/lib1.cpp
+)
+set_target_properties(${PROJECT_NAME}_Lib1 PROPERTIES
+  PUBLIC_HEADER "${PUBLIC_HEADERS}"
+  VERSION ${PROJECT_VERSION}
+  SOVERSION ${PROJECT_VERSION_MAJOR}
+  OUTPUT_NAME lib1
+  PREFIX ""
+  EXPORT_NAME Lib1
+)
+target_include_directories(${PROJECT_NAME}_Lib1
+  PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+    $<INSTALL_INTERFACE:include>
+  PRIVATE
+    src
+)
+
+# Testing
+if(BUILD_TESTING OR ${PROJECT_NAME}_BUILD_TESTING)
+  add_subdirectory(tests)
+endif()
+
+# Installation
+include(GNUInstallDirs)
+install(TARGETS ${PROJECT_NAME}_Lib1 EXPORT ${PROJECT_NAME}Config
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}/$<CONFIG>
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/$<CONFIG>
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}/$<CONFIG>
+  PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}/lib1
+)
+
+# Install PDB files for MSVC debug builds
+if(MSVC)
+  if(BUILD_SHARED_LIBS)
+    install(FILES $<TARGET_PDB_FILE:${PROJECT_NAME}_Lib1>
+      DESTINATION ${CMAKE_INSTALL_BINDIR}/$<CONFIG> OPTIONAL
+    )
+  else()
+    install(DIRECTORY $<TARGET_FILE_DIR:${PROJECT_NAME}_Lib1>/
+      DESTINATION ${CMAKE_INSTALL_LIBDIR}/$<CONFIG> FILES_MATCHING PATTERN "*.pdb"
+    )
+  endif()
+endif()

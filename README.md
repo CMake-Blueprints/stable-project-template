@@ -2,6 +2,8 @@
 
 A comprehensive multi-library project template focussed on compatibility with older CMake versions.
 
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/CMake-Blueprints/stable-project-template/build-and-test.yml)
+
 - Compatible with CMake 3.4+
 - Includes compiled and header-only library examples
 - Supports installing Debug and Release configuration to the same directory

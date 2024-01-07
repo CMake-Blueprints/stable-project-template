@@ -1,0 +1,54 @@
+name: Build and Test
+
+on:
+  push:
+    branches:
+      - '*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        build_type: [Release, Debug]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y cmake ninja-build
+      - uses: actions/checkout@v3
+      - name: Configure
+        run: cmake -S . -B build/ -G Ninja -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+      - name: Build
+        run: cmake --build build/ --target install --config ${{ matrix.build_type }}
+      - name: Test
+        run: |
+          cd build/
+          ctest --output-on-failure
+          cd ..
+      - name: Upload install directory
+        uses: actions/upload-artifact@v3
+        with:
+          name: install_${{ matrix.build_type }}
+          path: install/
+          retention-days: 1
+  
+  merge_install:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v3
+      - name: Merge install directories
+        run: |
+          mkdir install
+          for f in install_*; do
+            cp -r $f/* install/
+          done
+      - name: Upload merged install directory
+        uses: actions/upload-artifact@v3
+        with:
+          name: install
+          path: install/
+          retention-days: 7
